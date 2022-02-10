@@ -25,6 +25,15 @@ func main() {
     }
 
     fmt.Println(string(out))
+/*
+   cmd := exec.Command("ping",  " -c 4 google.com")
+    out_ping, err_ping := cmd.StdoutPipe()
 
+    if err_ping != nil {
+	    log.Fatal(err_ping)
+    }
+
+    fmt.Println(string(out_ping))
+*/
 }
 
