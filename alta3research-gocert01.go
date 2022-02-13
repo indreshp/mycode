@@ -1,3 +1,11 @@
+/*
+
+Mars rover cameras image count
+Using NASA's rest APIs collect data from different cameras 
+Include camera's with status active only
+
+*/
+
 package main
 
 import (
@@ -6,7 +14,7 @@ import (
   "encoding/json"
   "log"
 )
-
+// Mars rover camera photo data structure type definition
 type MarsPhoto struct {
 	Photos []struct {
 		ID     int `json:"id"`
@@ -30,35 +38,39 @@ type MarsPhoto struct {
 }
  
 func main() {
-    //url := "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&page=2&api_key=DEMO_KEY"
-    url := "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=DEMO_KEY"
+   // NASA API with demo key	
+   url := "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=DEMO_KEY"
+   // http get method
    method := "GET"
+   // defile client an http client
    client := &http.Client{}
 
+   // building new http request
    req, err := http.NewRequest(method, url, nil)
    if err != nil {
       fmt.Println(err)
    }
 
+   // do send http request and get http response
    res, err := client.Do (req)
    if err != nil{
         fmt.Println(err)
         return
-    }
-    defer res.Body.Close()
-    //fmt.Println(res.Body)
-
-    var record  MarsPhoto // MarsPhoto
-    if err := json.NewDecoder(res.Body).Decode(&record); err != nil {
+   }
+   // close connection even if any problem occurs
+   defer res.Body.Close()
+   // declare record of type MarsPhoto structure
+   var record  MarsPhoto 
+   // use json decoder to read streams of JSON data
+   if err := json.NewDecoder(res.Body).Decode(&record); err != nil {
                 log.Println(err)
         }
-     //fmt.Println(record)
-    mastCount, fhazCount, rhazCount, chemcamCount, mahliCount, mardiCount, navcamCount, 
+   // declare image count variables of different cameras	
+   mastCount, fhazCount, rhazCount, chemcamCount, mahliCount, mardiCount, navcamCount, 
                pancamCount, minitesCount := 0, 0, 0, 0, 0, 0, 0, 0, 0
-
-     for _, data := range record.Photos {
-        // fmt.Println(rec_id)
-	if data.Rover.Status == "active" {
+   // for each record increment the image count of the specific camera if status flag is active
+   for _, data := range record.Photos {
+       if data.Rover.Status == "active" {
 	   switch {
  	     case data.Camera.Name == "MAST":
 	          mastCount++
@@ -80,18 +92,19 @@ func main() {
 	          minitesCount++
 	  }
         }
-     }
-     fmt.Println("MAST Camera image count --> ", mastCount)
-     fmt.Println("RHAZ Camera image count --> ", rhazCount)
-     fmt.Println("FHAZ Camera image count --> ", fhazCount)
-     fmt.Println("CHEMCAM Camera image count --> ", chemcamCount)
-     fmt.Println("MAHLI Camera image count --> ", mahliCount)
-     fmt.Println("MARDI Camera image count --> ", mardiCount)
-     fmt.Println("NAVCAM Camera image count --> ", navcamCount)
-     fmt.Println("PANCAM Camera image count --> ", pancamCount)
-     fmt.Println("MINITES Camera image count --> ", minitesCount)
-     
+    }
 
+    // print report camera name Vs. image count
+    fmt.Println("Camera --> image count")
+    fmt.Println("MAST   --> ", mastCount)
+    fmt.Println("RHAZ   --> ", rhazCount)
+    fmt.Println("FHAZ   --> ", fhazCount)
+    fmt.Println("CHEMCAM--> ", chemcamCount)
+    fmt.Println("MAHLI  --> ", mahliCount)
+    fmt.Println("MARDI  --> ", mardiCount)
+    fmt.Println("NAVCAM --> ", navcamCount)
+    fmt.Println("PANCAM --> ", pancamCount)
+    fmt.Println("MINITES--> ", minitesCount)
 }
 
 
