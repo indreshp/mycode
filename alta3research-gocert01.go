@@ -7,8 +7,8 @@ import (
   "log"
 )
 
-//type MarsPhoto []struct {
-type	MarsPhotos []struct {
+type MarsPhoto struct {
+	Photos []struct {
 		ID     int `json:"id"`
 		Sol    int `json:"sol"`
 		Camera struct {
@@ -26,8 +26,8 @@ type	MarsPhotos []struct {
 			LaunchDate  string `json:"launch_date"`
 			Status      string `json:"status"`
 		} `json:"rover"`
-	} // `json:"photos"`
-//}
+	} `json:"photos"`
+}
  
 func main() {
     url := "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&page=2&api_key=DEMO_KEY"
@@ -47,17 +47,32 @@ func main() {
     defer res.Body.Close()
     //fmt.Println(res.Body)
 
-    var record  MarsPhotos // MarsPhoto
+    var record  MarsPhoto // MarsPhoto
     if err := json.NewDecoder(res.Body).Decode(&record); err != nil {
                 log.Println(err)
         }
      //fmt.Println(record)
      
-     for ID := range record {
-        fmt.Println(ID)
+     for rec_id, data := range record.Photos {
+        fmt.Println(rec_id)
+        fmt.Println(data.ID)
+        fmt.Println(data.Sol)
+        fmt.Println(data.Camera.Name)
+        fmt.Println(data.Camera.FullName)
+        fmt.Println(data.ImgSrc)
+        fmt.Println(data.EarthDate)
+        fmt.Println(data.Rover.Status)
      }
+     
 
-
+     /*
+     photosStream := &*record
+     fmt.Println(photosStream)
+    for photos := range photosStream {
+       fmt.Println(photos)
+       fmt.Println(photos.ID)
+    }
+*/
 }
 
 
