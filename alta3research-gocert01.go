@@ -30,7 +30,8 @@ type MarsPhoto struct {
 }
  
 func main() {
-    url := "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&page=2&api_key=DEMO_KEY"
+    //url := "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&page=2&api_key=DEMO_KEY"
+    url := "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=DEMO_KEY"
    method := "GET"
    client := &http.Client{}
 
@@ -52,27 +53,45 @@ func main() {
                 log.Println(err)
         }
      //fmt.Println(record)
-     
-     for rec_id, data := range record.Photos {
-        fmt.Println(rec_id)
-        fmt.Println(data.ID)
-        fmt.Println(data.Sol)
-        fmt.Println(data.Camera.Name)
-        fmt.Println(data.Camera.FullName)
-        fmt.Println(data.ImgSrc)
-        fmt.Println(data.EarthDate)
-        fmt.Println(data.Rover.Status)
+    mastCount, fhazCount, rhazCount, chemcamCount, mahliCount, mardiCount, navcamCount, 
+               pancamCount, minitesCount := 0, 0, 0, 0, 0, 0, 0, 0, 0
+
+     for _, data := range record.Photos {
+        // fmt.Println(rec_id)
+	if data.Rover.Status == "active" {
+	   switch {
+ 	     case data.Camera.Name == "MAST":
+	          mastCount++
+   	     case data.Camera.Name == "FHAZ":
+	          fhazCount++
+	     case data.Camera.Name == "RHAZ":
+	          rhazCount++
+ 	     case data.Camera.Name == "CHEMCAM":
+	          chemcamCount++
+   	     case data.Camera.Name == "MAHLI":
+	          mahliCount++
+	     case data.Camera.Name == "MARDI":
+	          mardiCount++
+ 	     case data.Camera.Name == "NAVCAM":
+	          navcamCount++
+   	     case data.Camera.Name == "PANCAM":
+	          pancamCount++
+	     case data.Camera.Name == "MINITES":
+	          minitesCount++
+	  }
+        }
      }
+     fmt.Println("MAST Camera image count --> ", mastCount)
+     fmt.Println("RHAZ Camera image count --> ", rhazCount)
+     fmt.Println("FHAZ Camera image count --> ", fhazCount)
+     fmt.Println("CHEMCAM Camera image count --> ", chemcamCount)
+     fmt.Println("MAHLI Camera image count --> ", mahliCount)
+     fmt.Println("MARDI Camera image count --> ", mardiCount)
+     fmt.Println("NAVCAM Camera image count --> ", navcamCount)
+     fmt.Println("PANCAM Camera image count --> ", pancamCount)
+     fmt.Println("MINITES Camera image count --> ", minitesCount)
      
 
-     /*
-     photosStream := &*record
-     fmt.Println(photosStream)
-    for photos := range photosStream {
-       fmt.Println(photos)
-       fmt.Println(photos.ID)
-    }
-*/
 }
 
 
